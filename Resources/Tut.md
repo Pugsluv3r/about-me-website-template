@@ -1,0 +1,1 @@
+Okay so currently all songs pfps and album covers are blank replace them with what you want

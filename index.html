@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your site title</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="floating-island" id="island">
+
+    <img class="avatar" src="Resources/PfP.jpg"alt="Profile Picture"/>
+
+    <div class="island-content">
+
+        <div class="brand" id="toggleBtn">
+
+            <span class="site-name">Your username</span>
+
+            <div class="discord-row">
+
+                <img class="discord-icon" src="Resources/Discordiconnew.png" alt="Discord"/>
+
+                <span class="discord-name">Your discord user</span>
+
+                <img class="discord-badge" src="Resources/Badges/active-developer.png"> <!-- Active Developer Badge -->
+                <img class="discord-badge" src="Resources/Badges/nitro.png"> <!-- Nitro Badge -->
+                <img class="discord-badge" src="Resources/Badges/early-supporter.png"> <!-- Early Supporter Badge you can get rid of / change these by deleting/replacing them-->
+
+            </div>
+
+        </div>
+
+        <nav onclick="whenclickedplaysound()" class="nav-links">
+            <a href="#" data-page="home">Home</a>
+            <a href="#" data-page="about">About</a>
+            <a href="#" data-page="experience">experience</a>
+            <a href="#" data-page="contact">Contact</a>
+            <a href="#" data-page="Discord">Discord</a>
+        </nav>
+        
+
+    </div>
+</div>
+
+<!-- Pages -->
+<div id="home" class="page active">
+    <div class="page-card">
+        <h1 style="text-align: center;">This is the title to your page (this is also your landing page)</h1>
+
+        <h3 style="text-align: center;">this is a descriptor</h3>
+        
+        <div style="text-align: center; margin-top: 28px;">
+        </div>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <div class="page-card">
+            <h1>this your about page</h1>
+        <h3>This is a placeholder for your about page description.</h3>
+
+        <h4>Placeholder for additional information.</h4>
+    </div>
+</div>
+
+<div id="experience" class="page">
+    <div class="page-card">
+        <h1>Placeholder for experience page</h1>
+        <h2>Projects:</h2>
+        <ul>
+            <li><strong>Placeholder:</strong> Placeholder description for the project.</li>
+        </ul>
+        <h2>Programming languages</h2>
+        <ul>
+            <li>placeholder</li>
+
+        </ul>
+        <h2>Programs your familiar with</h2>
+        <ul>
+            <li>placeholder</li>
+        </ul>
+    </div>
+</div>
+
+<div id="contact" class="page">
+    <div class="page-card">
+        <h1>Contact</h1>
+        <p><h3>Discord:</h3> placeholder</p>
+        <p><h3>Email:</h3> placeholder</p>   
+    </div>
+</div>
+
+<div id="Discord" class="page">
+    <div class="page-card">
+        <h1 style="text-align: center;">Wanna hang out?!</h1>
+        <h3 style="text-align: center;">I have a discord server!</h3>
+        <div style="text-align: center; margin-top: 28px;">
+            <button class="theme-button" onclick="window.open('https://discord.gg/', '_blank')">Join My Discord</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="music-player">
+
+    <div class="music-left">
+        <div class="music-cover"></div>
+
+        <div class="music-meta">
+            <div id="trackName">Loading...</div>
+            <div class="music-sub">Now Playing</div>
+        </div>
+    </div>
+
+    <div class="music-center">
+        <input id="progress" type="range" min="0" max="100" value="0">
+    </div>
+
+    <div class="music-right">
+        <button id="prev">⏮</button>
+        <button id="playBtn">▶</button>
+        <button id="next">⏭</button>
+    </div>
+
+    <audio id="audio"></audio>
+</div>
+
+<script>
+const island = document.getElementById("island");
+document.getElementById("toggleBtn").onclick = () => island.classList.toggle("expanded");
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+    link.onclick = e => {
+        e.preventDefault();
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.getElementById(link.dataset.page).classList.add("active");
+        island.classList.remove("expanded");
+    };
+});
+
+const playlist = [
+    {
+        name: "first song - artist",
+        src: "Resources/Song1.mp3",
+        cover: "Resources/Covers/Cover1.jpg"
+    },
+    {
+        name: "second song - artist",
+        src: "Resources/Song2.mp3",
+        cover: "Resources/Covers/Cover2.jpg"
+    },
+    {
+        name: "third song - artist",
+        src: "Resources/Song3.mp3",
+        cover: "Resources/Covers/Cover3.jpg"
+    }
+];
+
+let index = 0;
+
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const nextBtn = document.getElementById("next");
+const prevBtn = document.getElementById("prev");
+const trackName = document.getElementById("trackName");
+const progress = document.getElementById("progress");
+const volume = document.getElementById("volume");
+const cover = document.querySelector(".music-cover");
+
+let unmuted = false;
+
+
+function loadTrack(i) {
+    const track = playlist[i];
+
+    audio.src = track.src;
+    trackName.textContent = track.name;
+
+    cover.style.backgroundImage = `url(${track.cover})`;
+    cover.style.backgroundSize = "cover";
+    cover.style.backgroundPosition = "center";
+}
+
+
+loadTrack(index);
+audio.volume = volume ? volume.value : 0.7;
+
+
+window.addEventListener("load", () => {
+    audio.muted = true;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            console.log("nah you gotta click first twin ");
+        });
+    }
+});
+
+
+document.addEventListener("click", () => {
+    if (unmuted) return;
+
+    audio.muted = false;
+    unmuted = true;
+    playBtn.textContent = "⏸";
+    audio.play();
+});
+
+playBtn.onclick = () => {
+    if (audio.paused) {
+        audio.play();
+        playBtn.textContent = "⏸";
+    } else {
+        audio.pause();
+        playBtn.textContent = "▶";
+    }
+};
+
+nextBtn.onclick = () => {
+    index = (index + 1) % playlist.length;
+    loadTrack(index);
+    audio.play();
+    playBtn.textContent = "⏸";
+};
+
+prevBtn.onclick = () => {
+    index = (index - 1 + playlist.length) % playlist.length;
+    loadTrack(index);
+    audio.play();
+    playBtn.textContent = "⏸";
+};
+
+audio.ontimeupdate = () => {
+    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+};
+
+progress.oninput = () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+};
+
+volume.oninput = () => {
+    audio.volume = volume.value;
+};
+function whenclickedplaysound() {
+    const clickSound = new Audio('Resources/clicksound.mp3');
+    clickSound.play();
+    clickSound.volume = 0.2;
+}
+</script>
+
+</body>
+</html>
